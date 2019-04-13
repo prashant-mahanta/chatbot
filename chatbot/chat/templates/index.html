@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>ChatBot</title>
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'>
+
+      <link rel="stylesheet" href="{% static 'chat/css/style.css' %}">
+</head>
+ 
+<body>
+
+    <div class="container clearfix">
+    <div class="chat">
+      <div class="chat-header clearfix">
+        <img src="{% static 'chat/img/chat.png' %}" height="60" width="60" alt="avatar" />
+        <div class="chat-about">
+          <div class="chat-with">ChatBot</div>
+          <!-- <div class="chat-num-messages">chat count</div> -->
+        </div>
+        <i class="fa fa-star"></i>
+      </div> <!-- end chat-header -->
+      
+      <div class="chat-history">
+        <ul>
+
+          <!-- Past chats here in for Loop -->
+          {% if messages %}
+            {% for message in messages %}
+           <!--  <li>
+              <div class="message-data">
+                <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>
+                <span class="message-data-time">10:20 AM, Today</span>
+              </div>
+              <div class="message other-message">
+                Actually everything was fine. I'm very excited to show this to our team.
+              </div>
+            </li> -->
+            {% endfor %}
+          {% endif %}
+          
+          <!-- <li>
+            <div class="message-data">
+              <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>
+              <span class="message-data-time">10:31 AM, Today</span>
+            </div>
+            <i class="fa fa-circle online"></i>
+            <i class="fa fa-circle online" style="color: #AED2A6"></i>
+            <i class="fa fa-circle online" style="color:#DAE9DA"></i>
+          </li> -->
+          
+        </ul>
+        
+      </div> 
+      <!-- end chat-history -->
+      
+      <div class="chat-message clearfix" id="message-ch">
+        <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="4"></textarea>
+                
+        <!-- <i class="fa fa-file-o"></i>&nbsp;&nbsp;&nbsp; -->
+        <input type="file" id="file-upload" name="file-ch" style="display: none;" />
+        <i class="fa fa-file-o" onclick="check()"></i>
+
+        <button>Send</button>
+
+      </div> <!-- end chat-message -->
+      
+    </div> <!-- end chat -->
+
+    <div class="people-list" id="people-list">
+      <ul class="list">
+        <li class="clearfix">
+          <!-- <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" /> -->
+          <button class="button button2" onclick="ch()">All Files</button>
+          <!-- <div class="about">
+            <div class="name">Vincent Porter</div>
+            <div class="status">
+              <i class="fa fa-circle online"></i> online
+            </div>
+          </div> -->
+        </li>
+      </ul>
+
+    </div>
+    
+  </div> <!-- end container -->
+{% verbatim %}
+<script id="message-template" type="text/x-handlebars-template">
+  <li class="clearfix">
+    <div class="message-data align-right">
+      <span class="message-data-time" >{{time}}, Today</span> &nbsp; &nbsp;
+      <span class="message-data-name" >Prashant</span> <i class="fa fa-circle me"></i>
+    </div>
+    <div class="message other-message float-right">
+      {{messageOutput}}
+    </div>
+  </li>
+</script>
+{% endverbatim %}
+
+{% verbatim %}
+<script id="message-response-template" type="text/x-handlebars-template">
+  <li>
+    <div class="message-data">
+      <span class="message-data-name"><i class="fa fa-circle online"></i> Bot</span>
+      <span class="message-data-time"> {{time}} </span>
+    </div>
+    <div class="message my-message">
+      {{response}}
+    </div>
+  </li>
+</script>
+{% endverbatim %}
+
+<script type="text/javascript">
+  // function check(elemId){
+  //  var elem = document.getElementById(elemId);
+  //  elem.click();
+  // }
+
+  // function print(){
+  //   var elem = document.getElementById("input1");
+  //   console.log(elem.files);
+  // }
+</script>
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.0/handlebars.min.js'></script>
+<script src='http://cdnjs.cloudflare.com/ajax/libs/list.js/1.1.1/list.min.js'></script>
+
+<script type="text/javascript">
+  FileToSend = new File([""], "filename");
+
+  function check(){
+
+   var elem = document.getElementById("file-upload");
+   FileToSend = elem.files;
+   console.log(FileToSend);
+   elem.click();
+  }
+
+  (function(){
+
+  var chat = {
+    messageToSend: '',
+    messageResponses: [
+      'Why did the web developer leave the restaurant? Because of the table layout.',
+      'How do you comfort a JavaScript bug? You console it.',
+      'An SQL query enters a bar, approaches two tables and asks: "May I join you?"',
+      'What is the most used language in programming? Profanity.',
+      'What is the object-oriented way to become wealthy? Inheritance.',
+      'An SEO expert walks into a bar, bars, pub, tavern, public house, Irish pub, drinks, beer, alcohol'
+    ],
+    init: function() {
+      this.cacheDOM();
+      this.bindEvents();
+      this.render();
+    },
+    cacheDOM: function() {
+      this.$chatHistory = $('.chat-history');
+      this.$button = $('button');
+      this.$textarea = $('#message-to-send');
+      this.$chatHistoryList =  this.$chatHistory.find('ul');
+    },
+    bindEvents: function() {
+      this.$button.on('click', this.addMessage.bind(this));
+      this.$textarea.on('keyup', this.addMessageEnter.bind(this));
+    },
+    render: function() {
+      this.scrollToBottom();
+      if (this.messageToSend.trim() !== '') {
+        console.log("Message sending");
+        var template = Handlebars.compile( $("#message-template").html());
+        var context = { 
+          messageOutput: this.messageToSend,
+          time: this.getCurrentTime()
+        };
+        // console.log(context);
+        this.$chatHistoryList.append(template(context));
+        this.scrollToBottom();
+        this.$textarea.val('');
+        
+        // responses
+        var templateResponse = Handlebars.compile( $("#message-response-template").html());
+        var contextResponse = { 
+          response: this.getRandomItem(this.messageResponses),
+          time: this.getCurrentTime()
+        };
+
+        $.ajax({
+          type: "POST",
+          url : "api-message/",
+          dataType : "json",
+          data: {"text" : this.messageToSend.trim() },
+          success : function (value) {
+            console.log("send request");
+          }
+        });
+
+        
+        setTimeout(function() {
+          this.$chatHistoryList.append(templateResponse(contextResponse));
+          this.scrollToBottom();
+        }.bind(this), 1500);
+        
+      }
+
+      else if(FileToSend.length != 0){
+        console.log("Here file")
+        console.log(FileToSend);
+        console.log(FileToSend.length);
+        var template = Handlebars.compile( $("#message-template").html());
+        var context = { 
+          messageOutput: "File",
+          time: this.getCurrentTime()
+        };
+        // console.log(context);
+        this.$chatHistoryList.append(template(context));
+        this.scrollToBottom();
+        this.$textarea.val('');
+        
+        // responses
+        var templateResponse = Handlebars.compile( $("#message-response-template").html());
+        var contextResponse = { 
+          response: this.getRandomItem(this.messageResponses),
+          time: this.getCurrentTime()
+        };
+
+
+        var file = {};
+        var myArray = [];
+        files = FileToSend;
+        // manually create a new file obj for each File in the FileList
+
+        file = {
+              // 'lastMod'    : files[0].lastModified,
+              // 'lastModDate': files.lastModifiedDate,
+              'name'       : files[0].name,
+              // 'size'       : files[0].size,
+              // 'type'       : files[0].type,
+        } 
+          //add the file obj to your array
+        // myArray.push(file)
+        console.log(FileToSend[0]);
+        var formData = new FormData();
+        for (var i=0;i<FileToSend.length; i++){
+          console.log(FileToSend[i]);
+          formData.append("file-q", FileToSend[i]);
+        }
+
+        for (var key of formData.entries()) {
+        console.log(key[0] + ', ' + key[1]);
+        }
+        // formData.append("filename",FileToSend[0]);
+        console.log(formData.get("file-q"));
+        console.log(formData);
+        $.ajax({
+          type: "POST",
+          url : "api-message/",
+          // dataType : "json",
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success : function (value) {
+            console.log("send request");
+          }
+        });
+
+        setTimeout(function() {
+          this.$chatHistoryList.append(templateResponse(contextResponse));
+          this.scrollToBottom();
+        }.bind(this), 1500);
+      }
+      
+    },
+    
+    addMessage: function() {
+      this.messageToSend = this.$textarea.val();
+      this.render();         
+    },
+    addMessageEnter: function(event) {
+        // enter was pressed
+        if (event.keyCode === 13) {
+          console.log("Enter");
+          this.addMessage();
+        }
+    },
+    scrollToBottom: function() {
+       this.$chatHistory.scrollTop(this.$chatHistory[0].scrollHeight);
+    },
+    getCurrentTime: function() {
+      return new Date().toLocaleTimeString().
+              replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3");
+    },
+    getRandomItem: function(arr) {
+      return arr[Math.floor(Math.random()*arr.length)];
+    }
+    
+  };
+  
+  chat.init();
+  
+})();
+</script>
+
+</body>
+
+</html>
+
