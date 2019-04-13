@@ -31,10 +31,16 @@ class ChatAppView(APIView):
 		if request.FILES.get('file-q'):
 			file = request.FILES.getlist('file-q')[0]
 		if text == None:
-			instance = Messages(file=file,user=user)
-		if file == None:
-			instance = Messages(text=text,user=user)
-
+			if file == None:
+				pass
+			else:
+				instance = Messages(file=file,user=user)
+				
+		elif text != None:
+			if file == None:
+				instance = Messages(text=text,user=user)
+			else:
+				instance = Messages(text=text, user=user)
 		if text == None and file == None:
 			pass
 		else:

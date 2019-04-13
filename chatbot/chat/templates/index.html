@@ -17,6 +17,7 @@
   <div class="card">
     <div class="container ">
     <div class="chat">
+
       <div class="chat-header clearfix">
         <img src="{% static 'chat/img/chat.png' %}" height="40" width="40" alt="avatar" />
         <div class="chat-about">
@@ -39,23 +40,12 @@
         <!-- <i class="fa fa-file-o"></i>&nbsp;&nbsp;&nbsp; -->
         <input type="file" id="file-upload" name="file-ch" style="display: none;" />
         <i class="fa fa-file-o" onclick="check()"></i> &nbsp;&nbsp;&nbsp;
-        <span id="file-name"></span> 
+        <span id="file-name" class="badge badge-light"></span> 
         <button>Send</button>
 
       </div> <!-- end chat-message -->
       
     </div> <!-- end chat -->
-
-    <!-- <div class="people-list" id="people-list">
-      <ul class="list">
-        <li class="clearfix">
-          
-          <button class="button button2" onclick="ch()">All Files</button>
-         
-        </li>
-      </ul>
-
-    </div> -->
     
   </div> 
   <!-- end container -->
@@ -111,7 +101,22 @@
     <div class="message other-message float-right">
         <!-- {{file}} -->
         <!-- <a href="#" data-behaviour="modal" data-title="1 title of modal" data-content="1 content goes here">View File</a> -->
-        <embed src="{{file}}" height=100 width=100 />
+        <a href="{{file}}" target="_blank">View File </a>
+    </div>
+  </li>
+</script>
+{% endverbatim %}
+
+{% verbatim %}
+<script id="message-template-both" type="text/x-handlebars-template">
+  <li class="clearfix">
+    <div class="message-data align-right">
+      <span class="message-data-time" >{{time}}</span> &nbsp; &nbsp;
+      <span class="message-data-name" >Prashant</span> <i class="fa fa-circle me"></i>
+    </div>
+    <div class="message other-message float-right">
+        {{messageOutput}} <br>
+        <a href="{{file}}" target="_blank">View File </a>
     </div>
   </li>
 </script>
@@ -274,9 +279,9 @@
 
   function check(){
    var elem = document.getElementById("file-upload");
+   elem.click();
    FileToSend = elem.files;
    console.log(FileToSend);
-   elem.click();
    // console.log(FileToSend.name);
    document.getElementById("file-name").innerHTML =  FileToSend[0].name;
   };
@@ -317,10 +322,10 @@
       // both file and Text 
       if(this.messageToSend.trim() !== '' && FileToSend.length != 0 && FileToSend.length !== undefined){
 
-        var template = Handlebars.compile( $("#message-template").html());
+        var template = Handlebars.compile( $("#message-template-both").html());
         var context = { 
-          messageOutput: this.messageToSend,
-          file: "File",
+          messageOutput: this.messageToSend.trim(),
+          file: "/media/"+FileToSend[0].name,
           time: this.getCurrentTime()
         };
         // console.log(context);
@@ -338,7 +343,7 @@
 
         var formData = new FormData();
         for (var i=0;i<FileToSend.length; i++){
-          console.log(FileToSend[i]);
+          // console.log(FileToSend[i]);
           formData.append("file-q", FileToSend[i]);
         }
         formData.append("text", context.messageOutput);
@@ -373,10 +378,10 @@
       }
       // Only text Sending
       else if (this.messageToSend.trim() !== '') {
-        console.log("Message sending");
+        // console.log("Message sending");
         var template = Handlebars.compile( $("#message-template").html());
         var context = { 
-          messageOutput: this.messageToSend,
+          messageOutput: this.messageToSend.trim(),
           time: this.getCurrentTime()
         };
         
@@ -416,13 +421,14 @@
           this.scrollToBottom();
         }.bind(this), 3000);
       }
+
       // Only File is uploaded
       else if(FileToSend.length != 0 && FileToSend.length !== undefined){
         
-        console.log(FileToSend.length);
-        var template = Handlebars.compile( $("#message-template").html());
+        // console.log("Only File");
+        var template = Handlebars.compile( $("#message-template-history-file").html());
         var context = { 
-          messageOutput: "File",
+          file: "/media/"+FileToSend[0].name,
           time: this.getCurrentTime()
         };
         // console.log(context);
