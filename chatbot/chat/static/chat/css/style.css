@@ -11,10 +11,9 @@ body {
 }
 .container {
   margin: 0 auto;
-  width: 700px;
+  width: 600px;
   background: #444753;
   border-radius: 6px;
-  /*padding: 0 50px;*/
 }
 
 .people-list {
@@ -85,10 +84,10 @@ body {
 .chat .chat-header .chat-num-messages {
   color: #92959E;
 }
-.chat .chat-header .fa-star {
+.chat .chat-header .fa-folder-open {
   float: right;
-  color: #D8DADF;
-  font-size: 20px;
+  color: #92959E;
+  font-size: 30px;
   margin-top: 12px;
 }
 .chat .chat-history {
@@ -206,17 +205,41 @@ body {
   height: 0;
 }
 
-
-.button {
-  background-color: #4CAF50; /* Green 
-  border: none;
-  color: white;
-  padding: 15px 72px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  margin: 8px 2px;
-  cursor: pointer;
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-.button2 {font-size: 10px;}*/
+/* Modal Content */
+.modal-content {
+  background-color: #0f0606;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
