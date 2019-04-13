@@ -10,6 +10,8 @@ class Messages(models.Model):
 	file = models.FileField(blank=True, null=True)
 	# user 1 for bot response and 0 for user talking to response
 	user = models.IntegerField(default=0) 
+	# Bot feedback by user
+	bot_feedback = models.IntegerField(default=1)
 	created_at = models.DateTimeField(default=datetime.now, blank=False)
 
 	def __str__(self):

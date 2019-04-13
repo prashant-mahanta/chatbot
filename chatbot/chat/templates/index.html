@@ -127,10 +127,10 @@
     <div class="message my-message">
       {{response}}
     </div>
-    <div name="feedback-bot" id="feedback-bot-{{id}}">
+    <div name="feedback-bot" id="feedback-bot">
          &nbsp;&nbsp;&nbsp;&nbsp;Do you like the response: &nbsp;&nbsp;
-          <i onclick="feedBackPos({{id}});" class="fa fa-thumbs-up" id="feedback-bot-up-{{id}}" style="font-size: 2em;" ></i>&nbsp;&nbsp;
-          <i onclick="feedBackNeg({{id}});" class="fa fa-thumbs-down" id="feedback-bot-down-{{id}}" style="font-size: 2em;" ></i>
+          <i  onclick="feedBackPos()" class="fa fa-thumbs-up" id="feedback-bot-up" style="font-size: 2em;" ></i>&nbsp;&nbsp;
+          <i onclick="feedBackNeg()" class="fa fa-thumbs-down" id="feedback-bot-down" style="font-size: 2em;" ></i>
     <div>
   </li>
 </script>
@@ -151,28 +151,127 @@
 </script>
 {% endverbatim %}
 
+{% verbatim %}
+<script id="message-like" type="text/x-handlebars-template">
+  <li>
+    <div class="message-data">
+      <span class="message-data-name"><i class="fa fa-circle online"></i> Bot</span>
+      <span class="message-data-time"> {{time}} </span>
+    </div>
+    <div class="message my-message">
+      <i class="fa fa-thumbs-up" style="font-size: 2em;" ></i>&nbsp;&nbsp;
+    </div>
+  </li>
+</script>
+{% endverbatim %}
+
+{% verbatim %}
+<script id="message-dislike" type="text/x-handlebars-template">
+  <li>
+    <div class="message-data">
+      <span class="message-data-name"><i class="fa fa-circle online"></i> Bot</span>
+      <span class="message-data-time"> {{time}} </span>
+    </div>
+    <div class="message my-message">
+      <i class="fa fa-thumbs-down"  style="font-size: 2em;" ></i>
+    </div>
+  </li>
+</script>
+{% endverbatim %}
+
   <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
 <script src='http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.0/handlebars.min.js'></script>
 <script src='http://cdnjs.cloudflare.com/ajax/libs/list.js/1.1.1/list.min.js'></script>
 
 <script type="text/javascript">
 
-  function feedBackPos(id){
-    console.log(id);
-    window.alert("Welcome");
-    var eid = "#feedback-bot-"+id;
-    console.log(eid);
-    $(eid).children().prop('disabled',true);
+  function feedBackPos() {
+      $.ajax({
+        type: "PUT",
+        url : "api-message/",
+        dataType: "json",
+        data: {"bot-feedback": 1},
+        success : function (value) {
+              var response = "Thanks! we are working hard to be best.";
+              document.getElementById("file-name").innerHTML = response;
+              function allert(){
+                document.getElementById("file-name").innerHTML = "";
+              }
+              
+              window.setTimeout( allert ,3000 );
+              // document.getElementById("file-name").innerHTML = "";
+              console.log();
+              // console.log("send request response");
+              // scrollToBottom();
+              // var template = Handlebars.compile( $("#message-dislike").html());
+              // var context = { 
+              //   time: getCurrentTime()
+              // };
+              // // console.log(context);
+              // this.$chatHistoryList.append(template(context));
+              // scrollToBottom();
+
+              // // response
+              // var templateResponse = Handlebars.compile( $("#message-response-template").html());
+              // var contextResponse = { 
+              //     response: "Sorry! We are getting better everyday.",
+              //     time: getCurrentTime(),
+              //     id: pid
+              // };
+              // setTimeout(function() {
+              //   $chatHistoryList.append(templateResponse(contextResponse));
+              //   scrollToBottom();
+              // }.bind(this), 2000);
+        }
+    });
+
   };
-  function feedBackNeg(id){
-    window.alert("We are trying to be better everyday");
-    var eid = "#feedback-bot-"+id;
-    console.log(eid);
-    $(eid).children().prop('disabled',true);
-  }
+
+  function feedBackNeg(){
+    // window.alert("We are trying to be better everyday");
+    // document.getElementById(eid).style.color = 'red'
+
+    $.ajax({
+        type: "PUT",
+        url : "api-message/",
+        dataType: "json",
+        data: {"bot-feedback": -1},
+        success : function (value) {
+              var response = "Sorry! We are getting better everyday.";
+              document.getElementById("file-name").innerHTML = response;
+              function allert(){
+                document.getElementById("file-name").innerHTML = "";
+              }
+              
+              window.setTimeout( allert ,3000 );
+              // console.log("send request response");
+              // scrollToBottom();
+              // var template = Handlebars.compile( $("#message-dislike").html());
+              // var context = { 
+              //   time: getCurrentTime()
+              // };
+              // // console.log(context);
+              // $chatHistoryList.append(template(context));
+              // scrollToBottom();
+
+              // // response
+              // var templateResponse = Handlebars.compile( $("#message-response-template").html());
+              // var contextResponse = { 
+              //     response: "Sorry! We are getting better everyday.",
+              //     time: getCurrentTime(),
+              //     id: pid
+              // };
+              // setTimeout(function() {
+              //   $chatHistoryList.append(templateResponse(contextResponse));
+              //   scrollToBottom();
+              // }.bind(this), 2000);
+        }
+    });
+  };
 
   FileToSend = new File([""], "filename"); 
   var pid = 1;
+
   function check(){
    var elem = document.getElementById("file-upload");
    FileToSend = elem.files;
@@ -181,10 +280,12 @@
    // console.log(FileToSend.name);
    document.getElementById("file-name").innerHTML =  FileToSend[0].name;
   };
+  codekey = 0;
 
   (function(){
 
   var chat = {
+
     messageToSend: '',
     messageResponses: [
       'Why did the web developer leave the restaurant? Because of the table layout.',
@@ -212,7 +313,66 @@
     render: function() {
       this.scrollToBottom();
       pid++;
-      if (this.messageToSend.trim() !== '') {
+
+      // both file and Text 
+      if(this.messageToSend.trim() !== '' && FileToSend.length != 0 && FileToSend.length !== undefined){
+
+        var template = Handlebars.compile( $("#message-template").html());
+        var context = { 
+          messageOutput: this.messageToSend,
+          file: "File",
+          time: this.getCurrentTime()
+        };
+        // console.log(context);
+        this.$chatHistoryList.append(template(context));
+        this.scrollToBottom();
+        this.$textarea.val('');
+        
+        // responses
+        var templateResponse = Handlebars.compile( $("#message-response-template").html());
+        var contextResponse = { 
+          response: this.getRandomItem(this.messageResponses),
+          time: this.getCurrentTime(),
+          id: pid.toString()
+        };
+
+        var formData = new FormData();
+        for (var i=0;i<FileToSend.length; i++){
+          console.log(FileToSend[i]);
+          formData.append("file-q", FileToSend[i]);
+        }
+        formData.append("text", context.messageOutput);
+        
+        $.ajax({
+          type: "POST",
+          url : "api-message/",
+          // dataType : "json",
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success : function (value) {
+            console.log("send request file");
+            document.getElementById("file-name").innerHTML =  "";
+            $.ajax({
+              type: "POST",
+              url: "api-message/",
+              dataType: "json",
+              data: {"text": contextResponse.response, "user": "1"},
+              success : function (value) {
+                console.log("send request response");
+              }
+            });
+          }
+        });
+
+        setTimeout(function() {
+          this.$chatHistoryList.append(templateResponse(contextResponse));
+          this.scrollToBottom();
+        }.bind(this), 2000);
+      }
+      // Only text Sending
+      else if (this.messageToSend.trim() !== '') {
         console.log("Message sending");
         var template = Handlebars.compile( $("#message-template").html());
         var context = { 
@@ -256,7 +416,7 @@
           this.scrollToBottom();
         }.bind(this), 3000);
       }
-
+      // Only File is uploaded
       else if(FileToSend.length != 0 && FileToSend.length !== undefined){
         
         console.log(FileToSend.length);
@@ -275,7 +435,7 @@
         var contextResponse = { 
           response: this.getRandomItem(this.messageResponses),
           time: this.getCurrentTime(),
-          id: pid
+          id: pid.toString()
         };
 
         var formData = new FormData();
@@ -372,12 +532,9 @@
         if (event.keyCode === 13) {
           console.log("Enter");
           this.addMessage();
-        // document.getElementById("feedback-bot-down").disabled = false;
-        // document.getElementById("feedback-bot-up").disabled = false;
-        // document.getElementById("feedback-bot-p").disabled = false;
-        
         }
     },
+
     scrollToBottom: function() {
        this.$chatHistory.scrollTop(this.$chatHistory[0].scrollHeight);
     },
@@ -388,12 +545,15 @@
     getRandomItem: function(arr) {
       return arr[Math.floor(Math.random()*arr.length)];
     }
-    
-  };
+
+    };
   
   chat.init();
-  
+
+
 })();
+
+
 </script>
 
 

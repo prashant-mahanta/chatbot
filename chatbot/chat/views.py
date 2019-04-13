@@ -40,9 +40,21 @@ class ChatAppView(APIView):
 		else:
 			instance.save()
 		print("save hogaya",text, file)
-		serialized_object = MessageSerializer(instance,many=False)
+		serialized_object = MessageSerializer(instance, many=False)
 		return Response(serialized_object.data)
+	
+	def put(self, request, format=None):
+		score = request.data.get("bot-feedback")
+		messages = Messages.objects.all()[::-1]
 
+		for message in messages:
+			if message.user == 1:
+				mid = message.id
+				break
+		instance = Messages(id=mid)
+		instance.bot_feedback = int(score)
+		serialized_object = MessageSerializer(instance, many=False)
+		return Response(serialized_object.data)
 
 def main(request):
 	messages = Messages.objects.all()
