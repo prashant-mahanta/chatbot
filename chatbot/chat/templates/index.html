@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <title>ChatBot</title>
-  
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
 
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'>
@@ -13,11 +14,11 @@
 </head>
  
 <body>
-
-    <div class="container clearfix">
+  <div class="card">
+    <div class="container ">
     <div class="chat">
       <div class="chat-header clearfix">
-        <img src="{% static 'chat/img/chat.png' %}" height="60" width="60" alt="avatar" />
+        <img src="{% static 'chat/img/chat.png' %}" height="40" width="40" alt="avatar" />
         <div class="chat-about">
           <div class="chat-with">ChatBot</div>
           <!-- <div class="chat-num-messages">chat count</div> -->
@@ -27,76 +28,90 @@
       
       <div class="chat-history">
         <ul>
-
-          <!-- Past chats here in for Loop -->
-          {% if messages %}
-            {% for message in messages %}
-           <!--  <li>
-              <div class="message-data">
-                <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>
-                <span class="message-data-time">10:20 AM, Today</span>
-              </div>
-              <div class="message other-message">
-                Actually everything was fine. I'm very excited to show this to our team.
-              </div>
-            </li> -->
-            {% endfor %}
-          {% endif %}
-          
-          <!-- <li>
-            <div class="message-data">
-              <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>
-              <span class="message-data-time">10:31 AM, Today</span>
-            </div>
-            <i class="fa fa-circle online"></i>
-            <i class="fa fa-circle online" style="color: #AED2A6"></i>
-            <i class="fa fa-circle online" style="color:#DAE9DA"></i>
-          </li> -->
           
         </ul>
-        
       </div> 
       <!-- end chat-history -->
       
       <div class="chat-message clearfix" id="message-ch">
-        <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="4"></textarea>
+        <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="2"></textarea>
                 
         <!-- <i class="fa fa-file-o"></i>&nbsp;&nbsp;&nbsp; -->
         <input type="file" id="file-upload" name="file-ch" style="display: none;" />
-        <i class="fa fa-file-o" onclick="check()"></i>
-
+        <i class="fa fa-file-o" onclick="check()"></i> &nbsp;&nbsp;&nbsp;
+        <span id="file-name"></span> 
         <button>Send</button>
 
       </div> <!-- end chat-message -->
       
     </div> <!-- end chat -->
 
-    <div class="people-list" id="people-list">
+    <!-- <div class="people-list" id="people-list">
       <ul class="list">
         <li class="clearfix">
-          <!-- <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" /> -->
+          
           <button class="button button2" onclick="ch()">All Files</button>
-          <!-- <div class="about">
-            <div class="name">Vincent Porter</div>
-            <div class="status">
-              <i class="fa fa-circle online"></i> online
-            </div>
-          </div> -->
+         
         </li>
       </ul>
 
-    </div>
+    </div> -->
     
-  </div> <!-- end container -->
+  </div> 
+  <!-- end container -->
+  </div>
+<!-- end card -->
 {% verbatim %}
 <script id="message-template" type="text/x-handlebars-template">
   <li class="clearfix">
     <div class="message-data align-right">
-      <span class="message-data-time" >{{time}}, Today</span> &nbsp; &nbsp;
+      <span class="message-data-time" >{{time}}</span> &nbsp; &nbsp;
+      <span class="message-data-name" >Prashant</span> <i class="fa fa-circle me"></i>
+    </div>
+    <div class="message other-message float-right">       
+         {{messageOutput}}
+
+    </div>
+  </li>
+</script>
+{% endverbatim %}
+
+{% verbatim %}
+<script id="message-template-history" type="text/x-handlebars-template">
+  <li class="clearfix">
+    <div class="message-data align-right">
+      <span class="message-data-time" >{{time}}</span> &nbsp; &nbsp;
       <span class="message-data-name" >Prashant</span> <i class="fa fa-circle me"></i>
     </div>
     <div class="message other-message float-right">
-      {{messageOutput}}
+         {{messageOutput}}
+    </div>
+  </li>
+</script>
+{% endverbatim %}
+
+{% verbatim %}
+<script id="modal-template" type="text/x-handlebars-template">
+<div id="modal" class="modal">
+  <div class="modal-body">
+    <h2>{{ title }}</h2>
+    <p>{{ cobootstrapntent }}</p>
+  </div>
+</div>
+</script>
+{% endverbatim %}
+
+{% verbatim %}
+<script id="message-template-history-file" type="text/x-handlebars-template">
+  <li class="clearfix">
+    <div class="message-data align-right">
+      <span class="message-data-time" >{{time}}</span> &nbsp; &nbsp;
+      <span class="message-data-name" >Prashant</span> <i class="fa fa-circle me"></i>
+    </div>
+    <div class="message other-message float-right">
+        <!-- {{file}} -->
+        <!-- <a href="#" data-behaviour="modal" data-title="1 title of modal" data-content="1 content goes here">View File</a> -->
+        <embed src="{{file}}" height=100 width=100 />
     </div>
   </li>
 </script>
@@ -112,35 +127,60 @@
     <div class="message my-message">
       {{response}}
     </div>
+    <div name="feedback-bot" id="feedback-bot-{{id}}">
+         &nbsp;&nbsp;&nbsp;&nbsp;Do you like the response: &nbsp;&nbsp;
+          <i onclick="feedBackPos({{id}});" class="fa fa-thumbs-up" id="feedback-bot-up-{{id}}" style="font-size: 2em;" ></i>&nbsp;&nbsp;
+          <i onclick="feedBackNeg({{id}});" class="fa fa-thumbs-down" id="feedback-bot-down-{{id}}" style="font-size: 2em;" ></i>
+    <div>
   </li>
 </script>
 {% endverbatim %}
 
-<script type="text/javascript">
-  // function check(elemId){
-  //  var elem = document.getElementById(elemId);
-  //  elem.click();
-  // }
 
-  // function print(){
-  //   var elem = document.getElementById("input1");
-  //   console.log(elem.files);
-  // }
+{% verbatim %}
+<script id="message-response-template-history" type="text/x-handlebars-template">
+  <li>
+    <div class="message-data">
+      <span class="message-data-name"><i class="fa fa-circle online"></i> Bot</span>
+      <span class="message-data-time"> {{time}} </span>
+    </div>
+    <div class="message my-message">
+      {{response}}
+    </div>
+  </li>
 </script>
+{% endverbatim %}
+
   <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
 <script src='http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.0/handlebars.min.js'></script>
 <script src='http://cdnjs.cloudflare.com/ajax/libs/list.js/1.1.1/list.min.js'></script>
 
 <script type="text/javascript">
-  FileToSend = new File([""], "filename");
 
+  function feedBackPos(id){
+    console.log(id);
+    window.alert("Welcome");
+    var eid = "#feedback-bot-"+id;
+    console.log(eid);
+    $(eid).children().prop('disabled',true);
+  };
+  function feedBackNeg(id){
+    window.alert("We are trying to be better everyday");
+    var eid = "#feedback-bot-"+id;
+    console.log(eid);
+    $(eid).children().prop('disabled',true);
+  }
+
+  FileToSend = new File([""], "filename"); 
+  var pid = 1;
   function check(){
-
    var elem = document.getElementById("file-upload");
    FileToSend = elem.files;
    console.log(FileToSend);
    elem.click();
-  }
+   // console.log(FileToSend.name);
+   document.getElementById("file-name").innerHTML =  FileToSend[0].name;
+  };
 
   (function(){
 
@@ -149,7 +189,6 @@
     messageResponses: [
       'Why did the web developer leave the restaurant? Because of the table layout.',
       'How do you comfort a JavaScript bug? You console it.',
-      'An SQL query enters a bar, approaches two tables and asks: "May I join you?"',
       'What is the most used language in programming? Profanity.',
       'What is the object-oriented way to become wealthy? Inheritance.',
       'An SEO expert walks into a bar, bars, pub, tavern, public house, Irish pub, drinks, beer, alcohol'
@@ -158,6 +197,7 @@
       this.cacheDOM();
       this.bindEvents();
       this.render();
+      this.earlierMessage();
     },
     cacheDOM: function() {
       this.$chatHistory = $('.chat-history');
@@ -171,6 +211,7 @@
     },
     render: function() {
       this.scrollToBottom();
+      pid++;
       if (this.messageToSend.trim() !== '') {
         console.log("Message sending");
         var template = Handlebars.compile( $("#message-template").html());
@@ -178,7 +219,7 @@
           messageOutput: this.messageToSend,
           time: this.getCurrentTime()
         };
-        // console.log(context);
+        
         this.$chatHistoryList.append(template(context));
         this.scrollToBottom();
         this.$textarea.val('');
@@ -187,7 +228,8 @@
         var templateResponse = Handlebars.compile( $("#message-response-template").html());
         var contextResponse = { 
           response: this.getRandomItem(this.messageResponses),
-          time: this.getCurrentTime()
+          time: this.getCurrentTime(),
+          id: pid
         };
 
         $.ajax({
@@ -197,20 +239,26 @@
           data: {"text" : this.messageToSend.trim() },
           success : function (value) {
             console.log("send request");
+            $.ajax({
+              type: "POST",
+              url: "api-message/",
+              dataType: "json",
+              data: {"text": contextResponse.response, "user": "1"},
+              success : function (value) {
+                console.log("send request");
+              }
+            });
           }
         });
-
-        
+   
         setTimeout(function() {
           this.$chatHistoryList.append(templateResponse(contextResponse));
           this.scrollToBottom();
-        }.bind(this), 1500);
-        
+        }.bind(this), 3000);
       }
 
-      else if(FileToSend.length != 0){
-        console.log("Here file")
-        console.log(FileToSend);
+      else if(FileToSend.length != 0 && FileToSend.length !== undefined){
+        
         console.log(FileToSend.length);
         var template = Handlebars.compile( $("#message-template").html());
         var context = { 
@@ -226,37 +274,17 @@
         var templateResponse = Handlebars.compile( $("#message-response-template").html());
         var contextResponse = { 
           response: this.getRandomItem(this.messageResponses),
-          time: this.getCurrentTime()
+          time: this.getCurrentTime(),
+          id: pid
         };
 
-
-        var file = {};
-        var myArray = [];
-        files = FileToSend;
-        // manually create a new file obj for each File in the FileList
-
-        file = {
-              // 'lastMod'    : files[0].lastModified,
-              // 'lastModDate': files.lastModifiedDate,
-              'name'       : files[0].name,
-              // 'size'       : files[0].size,
-              // 'type'       : files[0].type,
-        } 
-          //add the file obj to your array
-        // myArray.push(file)
-        console.log(FileToSend[0]);
         var formData = new FormData();
         for (var i=0;i<FileToSend.length; i++){
           console.log(FileToSend[i]);
           formData.append("file-q", FileToSend[i]);
         }
 
-        for (var key of formData.entries()) {
-        console.log(key[0] + ', ' + key[1]);
-        }
-        // formData.append("filename",FileToSend[0]);
-        console.log(formData.get("file-q"));
-        console.log(formData);
+        
         $.ajax({
           type: "POST",
           url : "api-message/",
@@ -266,18 +294,75 @@
           contentType: false,
           processData: false,
           success : function (value) {
-            console.log("send request");
+            console.log("send request file");
+            document.getElementById("file-name").innerHTML =  "";
+            $.ajax({
+              type: "POST",
+              url: "api-message/",
+              dataType: "json",
+              data: {"text": contextResponse.response, "user": "1"},
+              success : function (value) {
+                console.log("send request response");
+              }
+            });
           }
         });
 
         setTimeout(function() {
           this.$chatHistoryList.append(templateResponse(contextResponse));
           this.scrollToBottom();
-        }.bind(this), 1500);
+        }.bind(this), 3000);
       }
       
     },
+
+    earlierMessage: function() {
+      this.scrollToBottom();
+      {% if messages %}
+
+        {% for message in messages %}
+
+          {% if message.user == 0 %}
+
+            {% if message.text == None %}
+              var template = Handlebars.compile( $("#message-template-history-file").html());
+              context = {
+                  file: "{{message.file.url|safe}}",
+                  time: "{{message.created_at|safe}}"
+              }
+              this.$chatHistoryList.append(template(context));
+
+            {% else %}
+              var template = Handlebars.compile( $("#message-template-history").html());
+              var context = { 
+                messageOutput: "{{message.text|safe}}",
+                file: "{{message.file|safe}}",
+                time: "{{message.created_at|safe}}"
+              };
+              this.$chatHistoryList.append(template(context));
+            {% endif %}
+            
+            this.scrollToBottom();
+          {% else %}
+
+            var templateResponse = Handlebars.compile( $("#message-response-template-history").html());
+            var contextResponse = { 
+              response: "{{message.text|safe}}",
+              file: "{{message.file|safe}}",
+              time: "{{message.created_at|safe}}"
+            };
+            this.$chatHistoryList.append(templateResponse(contextResponse));
+            this.scrollToBottom();
+
+          {% endif %}
+
+        {% endfor %}
+
+      {% endif %}
+    },
     
+
+
     addMessage: function() {
       this.messageToSend = this.$textarea.val();
       this.render();         
@@ -287,6 +372,10 @@
         if (event.keyCode === 13) {
           console.log("Enter");
           this.addMessage();
+        // document.getElementById("feedback-bot-down").disabled = false;
+        // document.getElementById("feedback-bot-up").disabled = false;
+        // document.getElementById("feedback-bot-p").disabled = false;
+        
         }
     },
     scrollToBottom: function() {
@@ -307,6 +396,94 @@
 })();
 </script>
 
+
+<script type="text/javascript">
+  (function() {
+  
+  // Simple modal 
+  var modal = {
+    init: function() {
+
+      // Setup the template
+      this.source = $("#modal-template").html();
+      
+      // Setup outercontainer
+      this.outercontainer = $('body');
+
+      // Get the stuff
+      this.clickToOpenModal();
+
+      // Close the stuff
+      this.closeModal();
+
+    },
+    clickToOpenModal: function(context, thisLink) {
+
+      $('a[data-behaviour="modal"]').on('click', function(e) {
+        var thisLink = $(this);
+
+        var context = {
+          title: thisLink.data('title'), 
+          content: thisLink.data('content')
+        };
+
+        e.preventDefault();
+        
+         // Do nothing if open
+         if ( modal.outercontainer.children('div#modal').length ) return;
+
+         // Attach the content to the the modal
+        modal.attachTemplate(context, thisLink);
+
+        // Trigger the open event
+        thisLink.trigger('open');
+      });
+
+    },
+    attachTemplate: function(context, thisLink) {
+       var source = Handlebars.compile(this.source);
+
+        this.outercontainer
+          .append(source(context))
+          .promise()
+          .done(function() {
+
+          this
+            .children('div#modal')
+            .addClass('modal-visible');
+
+           // Close the stuff
+           thisLink.one('open', function() {
+             modal.closeModal();
+           });
+
+       });
+    },
+    closeModal: function() {
+      var container = $("div#modal");
+
+      // Remove modal on click background
+      container.on('click', function() {
+        container.remove();
+
+      });
+      // Remove modal on keypress ESC
+      $(document).on( 'keydown', function (e) {
+          if ( e.keyCode === 27 ) {
+             container.remove();
+          }
+      });
+      // You can click on modal body
+      container.find('div.modal-body').on('click', function(e) {
+        e.stopPropagation();
+      });
+    }
+  };
+
+  modal.init();
+
+})();
+</script>
 </body>
 
 </html>
