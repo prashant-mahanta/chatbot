@@ -11,25 +11,33 @@ from django.contrib.auth import authenticate, login, logout
 from .serializers import *
 from .models import *
 
+# Rest APIs for messages
 class ChatAppView(APIView):
 	permission_classes = [AllowAny]
 
+	# GET request
 	def get(self, request, format=None):
 		objects = Messages.objects.all()
 		serialized_object = MessageSerializer(objects,many=True)
 		return Response(serialized_object.data)
 
+	# POST request
 	def post(self, request, format=None):
 		text = request.data.get("text")
 		user = request.data.get("user")
+
 		if user == None:
+			# current user as default
 			user = 0
 		else:
+			# user is bot
 			user = int(user)
 
 		file = None
 		if request.FILES.get('file-q'):
 			file = request.FILES.getlist('file-q')[0]
+
+			
 		if text == None:
 			if file == None:
 				pass
@@ -41,21 +49,16 @@ class ChatAppView(APIView):
 				instance = Messages(text=text,file=None,user=user)
 			else:
 				instance = Messages(text=text, file=file, user=user)
+
 		if text == None and file == None:
 			return Response("Failed")
 		else:
-			# print("instance file",instance.file)
-			if instance.file == None:
-				print("Hurray")
-			else:
-				print(instance.file)
-			print("instance text",instance.text)
 			instance.save()
 			print("save hogaya",text, file)
 			serialized_object = MessageSerializer(instance, many=False)
 			return Response(serialized_object.data)
 
-	
+	# PUT request
 	def put(self, request, format=None):
 		if request.data.get("feedback-or-file") == "1":
 			score = request.data.get("bot-feedback")
@@ -85,6 +88,7 @@ class ChatAppView(APIView):
 			# print(serialized_object)
 			return Response(serialized_object.data)
 		
+
 
 def main(request):
 	messages = Messages.objects.all()
