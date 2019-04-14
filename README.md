@@ -20,5 +20,8 @@ It's always better to create a virtual environment and install dependencies.
 
 ``(venv)$ pip3 install -r requirements.txt``
 
+#### To install djangorestframework
+``$ pip3 install djangorestframework``
+
 #### To run project
 ``$ python3 manage.py runserver``
