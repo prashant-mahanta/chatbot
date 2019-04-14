@@ -17,13 +17,25 @@
  <div id="myModal" class="modal">
   <!-- Modal content -->
   <div class="modal-content">
-
-    <span class="close">&times;</span>
-    <p>Some text in the Modal..</p>
-    kala
-    allala
-    lalal
-    
+    <div class="modal-header">
+      <span class="close">&times;</span>
+      <h1 style="text-align: center; font-size: 10"><b>ALL FILES</b></h1>
+    </div>
+    <div class="modal-body">
+    <table>
+      {% if files %}
+        {% for message in files %}
+          <tr>
+              <a href="{{message.file.url|safe}}" target="_blank"><img src="static/chat/img/file.png" height=100 width=100><img src="static/chat/img/view.png" height=50 width=50 style="float:right"></a>
+              <a href="{{message.file.url|safe}}" download><img src="static/chat/img/download.png" height=40 width=40 style="float:right"></a><br/><br>
+              <button style="background-color: #008CBA; border: none; color: white; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block;font-size: 16px; float: center" >{{message.file}}</button><br/><br>
+            
+            
+          </tr><br/><br><br/><br>
+        {% endfor %}
+      {% endif %}
+    </table>
+    </div>
   </div>
 
 </div>
@@ -53,8 +65,8 @@
         <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="2"></textarea>
                 
         <!-- <i class="fa fa-file-o"></i>&nbsp;&nbsp;&nbsp; -->
-        <input type="file" id="file-upload" name="file-ch" style="display: none;" />
-        <i class="fa fa-file-o" onclick="check()"></i> &nbsp;&nbsp;&nbsp;
+          <i class="fa fa-file-o" onclick="check()"></i> &nbsp;&nbsp;&nbsp;
+          <input type="file" id="file-upload" name="file-ch" accept="application/*, image/*"hidden />
         <span id="file-name"></span> 
         <button>Send</button>
 
@@ -103,9 +115,12 @@
       <span class="message-data-name" >Prashant</span> <i class="fa fa-circle me"></i>
     </div>
     <div class="message other-message float-right">
-        <!-- {{file}} -->
-        <!-- <a href="#" data-behaviour="modal" data-title="1 title of modal" data-content="1 content goes here">View File</a> -->
-        <a href="{{file}}" target="_blank">View File </a>
+        <!-- {{file}}  -->
+        <a href="{{file}}" target="_blank"><img src="static/chat/img/view.png" height=100 width=100>
+          <button style="background-color: #008CBA; border: none; color: white; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block;font-size: 16px;">{{filename}}</button>
+        </a> &nbsp; &nbsp;
+        <a href="{{file}}" download><img src="static/chat/img/download.png" height=40 width=40 style="float:right"></a>
+        
     </div>
   </li>
 </script>
@@ -119,9 +134,16 @@
       <span class="message-data-name" >Prashant</span> <i class="fa fa-circle me"></i>
     </div>
     <div class="message other-message float-right">
-        {{messageOutput}} <br>
-        <a href="{{file}}" target="_blank">View File </a>
+        <!-- {{messageOutput}} <br>
+        <a href="{{file}}" target="_blank">View File </a> -->
+        <a href="{{file}}" target="_blank"><img src="static/chat/img/view.png" height=100 width=100>
+          <button style="background-color: #008CBA; border: none; color: white; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block;font-size: 16px;">{{filename}}</button>
+        </a> &nbsp; &nbsp;
+        <a href="{{file}}" download><img src="static/chat/img/download.png" height=40 width=40 style="float:right"></a>
     </div>
+    <div class="message other-message float-right">
+     {{messageOutput}}
+   </div>
   </li>
 </script>
 {% endverbatim %}
@@ -138,8 +160,8 @@
     </div>
     <div name="feedback-bot" id="feedback-bot">
          &nbsp;&nbsp;&nbsp;&nbsp;Do you like the response: &nbsp;&nbsp;
-          <i  onclick="feedBackPos()" class="fa fa-thumbs-up" id="feedback-bot-up" style="font-size: 2em;" ></i>&nbsp;&nbsp;
-          <i onclick="feedBackNeg()" class="fa fa-thumbs-down" id="feedback-bot-down" style="font-size: 2em;" ></i>
+          <i  onclick="feedBackPos({{id}})" class="fa fa-thumbs-up" id="feedback-bot-up" style="font-size: 2em;" ></i>&nbsp;&nbsp;
+          <i onclick="feedBackNeg({{id}})" class="fa fa-thumbs-down" id="feedback-bot-down" style="font-size: 2em;" ></i>
     <div>
   </li>
 </script>
@@ -194,12 +216,12 @@
 
 <script type="text/javascript">
 
-  function feedBackPos() {
+  function feedBackPos(id) {
       $.ajax({
         type: "PUT",
         url : "api-message/",
         dataType: "json",
-        data: {"bot-feedback": 1},
+        data: {"bot-feedback": 1, "bot-id": id, "feedback-or-file": "1"},
         success : function (value) {
               var response = "Thanks! we are working hard to be best.";
               document.getElementById("file-name").innerHTML = response;
@@ -236,7 +258,7 @@
 
   };
 
-  function feedBackNeg(){
+  function feedBackNeg(id){
     // window.alert("We are trying to be better everyday");
     // document.getElementById(eid).style.color = 'red'
 
@@ -244,7 +266,7 @@
         type: "PUT",
         url : "api-message/",
         dataType: "json",
-        data: {"bot-feedback": -1},
+        data: {"bot-feedback": -1, "bot-id": id, "feedback-or-file": "1"},
         success : function (value) {
               var response = "Sorry! We are getting better everyday.";
               document.getElementById("file-name").innerHTML = response;
@@ -282,13 +304,17 @@
   var pid = 1;
 
   function check(){
+  console.log("file input started");
    var elem = document.getElementById("file-upload");
    elem.click();
+   document.getElementById("file-name").innerHTML =  elem.files[0].name;
    FileToSend = elem.files;
    console.log(FileToSend);
    // console.log(FileToSend.name);
-   document.getElementById("file-name").innerHTML =  FileToSend[0].name;
+   
   };
+
+
   codekey = 0;
 
   (function(){
@@ -321,7 +347,7 @@
     },
     render: function() {
       this.scrollToBottom();
-      pid++;
+      
 
       // both file and Text 
       if(this.messageToSend.trim() !== '' && FileToSend.length != 0 && FileToSend.length !== undefined){
@@ -330,7 +356,8 @@
         var context = { 
           messageOutput: this.messageToSend.trim(),
           file: "/media/"+FileToSend[0].name,
-          time: this.getCurrentTime()
+          time: this.getCurrentTime(),
+          filename: FileToSend[0].name
         };
         // console.log(context);
         this.$chatHistoryList.append(template(context));
@@ -344,6 +371,7 @@
           time: this.getCurrentTime(),
           id: pid.toString()
         };
+        pid++;
 
         var formData = new FormData();
         for (var i=0;i<FileToSend.length; i++){
@@ -400,9 +428,9 @@
         var contextResponse = { 
           response: this.getRandomItem(this.messageResponses),
           time: this.getCurrentTime(),
-          id: pid
+          id: pid.toString()
         };
-
+        pid++;
         $.ajax({
           type: "POST",
           url : "api-message/",
@@ -437,7 +465,8 @@
         var template = Handlebars.compile( $("#message-template-history-file").html());
         var context = { 
           file: "/media/"+FileToSend[0].name,
-          time: this.getCurrentTime()
+          time: this.getCurrentTime(),
+          filename: FileToSend[0].name
         };
         // console.log(context);
         this.$chatHistoryList.append(template(context));
@@ -452,6 +481,7 @@
           id: pid.toString()
         };
 
+        pid++;
         var formData = new FormData();
         for (var i=0;i<FileToSend.length; i++){
           console.log(FileToSend[i]);
@@ -503,7 +533,8 @@
               var template = Handlebars.compile( $("#message-template-history-file").html());
               context = {
                   file: "{{message.file.url|safe}}",
-                  time: "{{message.created_at|safe}}"
+                  time: "{{message.created_at|safe}}",
+                  filename: "{{message.file|safe}}"
               }
               this.$chatHistoryList.append(template(context));
 
@@ -584,6 +615,17 @@ var span = document.getElementsByClassName("close")[0];
 // When the user clicks the button, open the modal 
 function openAllFiles() {
   modal.style.display = "block";
+
+  $.ajax({
+    url: "api-message/",
+    dataType: "json",
+    type: "PUT",
+    data: {"feedback-or-file":"2"},
+    success: function(value){
+      console.log(value);
+    }
+
+  });
 }
 
 // When the user clicks on <span> (x), close the modal

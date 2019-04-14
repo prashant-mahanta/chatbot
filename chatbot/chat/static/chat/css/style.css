@@ -8,12 +8,14 @@ body {
   font: 14px/20px "Lato", Arial, sans-serif;
   padding: 40px 0;
   color: white;
+
 }
 .container {
   margin: 0 auto;
   width: 600px;
   background: #444753;
   border-radius: 6px;
+
 }
 
 .people-list {
@@ -221,19 +223,45 @@ body {
 }
 
 /* Modal Content */
-.modal-content {
-  background-color: #0f0606;
+/*.modal-content {
+  background-color: #158096;
   margin: auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 80%;
+  width: 50%;
+  max-height: calc(100vh - 130px);
+  overflow-y: auto;
+}
+*/
+.modal-content {
+  /*position: relative;*/
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 40%;
+  max-height: calc(100vh - 130px);
+  overflow-y: auto;
+  /*box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);*/
+  /*-webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s*/
+}
+
+.modal-body {padding: 2px 16px;}
+
+.modal-header {
+  padding: 20px 2px;
+  background-color: #5cb85c;
+  color: white;
 }
 
 /* The Close Button */
 .close {
   color: #aaaaaa;
   float: right;
-  font-size: 28px;
+  font-size: 35px;
   font-weight: bold;
 }
 
@@ -243,3 +271,13 @@ body {
   text-decoration: none;
   cursor: pointer;
 }
+@-webkit-keyframes animatetop {
+  from {top:-300px; opacity:0} 
+  to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+  from {top:-300px; opacity:0}
+  to {top:0; opacity:1}
+}
+
