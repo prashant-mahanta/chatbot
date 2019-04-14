@@ -82,11 +82,10 @@ DATABASES = {
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.mysql',
+        'HOST' : 'chatbot.cnxte2ghfike.us-east-1.rds.amazonaws.com',
         'NAME' : 'chatbot',
-        'USER' : 'root',
-        'PASSWORD' : 'root',
-        # 'HOST' : 'ors.cpjlun4ym4rm.us-east-1.rds.amazonaws.com',
-        # 'PORT' : 3308,
+        'USER' : 'chatbot',
+        'PASSWORD' : 'chatbot123',
     }
 }
 
