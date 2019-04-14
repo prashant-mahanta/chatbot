@@ -1,7 +1,7 @@
 # chatbot
 This project is developed using Django framework. 
 
-Rest API for message communication.
+Rest API for inserting and retriving data from database (used djangorestframework).
 
 ``path('api-message/', ChatAppView.as_view(), name="ChatAppView")``
 
@@ -16,7 +16,7 @@ It's always better to create a virtual environment and install dependencies.
 
 ``$ source ./venv/bin/activate``
 
-To install dependencies run:
+#### To install dependencies run:
 
 ``(venv)$ pip3 install -r requirements.txt``
 
