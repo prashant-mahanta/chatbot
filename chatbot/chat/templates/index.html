@@ -68,7 +68,7 @@
                 
         <!-- <i class="fa fa-file-o"></i>&nbsp;&nbsp;&nbsp; -->
           <i class="fa fa-file-o" onclick="check()"></i> &nbsp;&nbsp;&nbsp;
-          <input type="file" id="file-upload" name="file-ch" accept="application/*, image/*"hidden />
+          <input type="file" id="file-upload" onchange="sendfile()" name="file-ch" accept="application/*, image/*"hidden />
         <span id="file-name"></span> 
         <button>Send</button>
 
@@ -306,15 +306,21 @@
   var pid = 1;
 
   function check(){
-  console.log("file input started");
-   var elem = document.getElementById("file-upload");
-   elem.click();
-   document.getElementById("file-name").innerHTML =  elem.files[0].name;
-   FileToSend = elem.files;
-   console.log(FileToSend);
-   // console.log(FileToSend.name);
+    console.log("file input started");
+     var elem = document.getElementById("file-upload");
+     elem.click();
+     
+     // console.log(FileToSend);
+     // console.log(FileToSend.name);
    
   };
+
+  function sendfile(){
+      console.log("Input change");
+      var elem = document.getElementById("file-upload");
+      document.getElementById("file-name").innerHTML =  elem.files[0].name;
+      FileToSend = elem.files;
+  }
 
 
   codekey = 0;
