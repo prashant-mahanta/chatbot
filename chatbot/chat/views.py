@@ -42,18 +42,19 @@ class ChatAppView(APIView):
 			else:
 				instance = Messages(text=text, file=file, user=user)
 		if text == None and file == None:
-			pass
+			return Response("Failed")
 		else:
-			print("instance file",instance.file)
+			# print("instance file",instance.file)
 			if instance.file == None:
 				print("Hurray")
 			else:
 				print(instance.file)
 			print("instance text",instance.text)
 			instance.save()
-		print("save hogaya",text, file)
-		serialized_object = MessageSerializer(instance, many=False)
-		return Response(serialized_object.data)
+			print("save hogaya",text, file)
+			serialized_object = MessageSerializer(instance, many=False)
+			return Response(serialized_object.data)
+
 	
 	def put(self, request, format=None):
 		if request.data.get("feedback-or-file") == "1":
@@ -81,7 +82,7 @@ class ChatAppView(APIView):
 				if i.file.name:
 					files.append(i)
 			serialized_object = MessageSerializer(files, many=False)
-			print(serialized_object)
+			# print(serialized_object)
 			return Response(serialized_object.data)
 		
 

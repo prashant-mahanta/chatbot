@@ -234,7 +234,7 @@ body {
 }
 */
 .modal-content {
-  /*position: relative;*/
+  position: relative;
   background-color: #fefefe;
   margin: auto;
   padding: 20px;

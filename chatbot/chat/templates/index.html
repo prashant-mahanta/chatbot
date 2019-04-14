@@ -16,9 +16,11 @@
 
  <div id="myModal" class="modal">
   <!-- Modal content -->
+
   <div class="modal-content">
+    <span class="close" style="color: #000000">&times;</span>
     <div class="modal-header">
-      <span class="close">&times;</span>
+      
       <h1 style="text-align: center; font-size: 10"><b>ALL FILES</b></h1>
     </div>
     <div class="modal-body">
@@ -323,11 +325,12 @@
 
     messageToSend: '',
     messageResponses: [
-      'Why did the web developer leave the restaurant? Because of the table layout.',
-      'How do you comfort a JavaScript bug? You console it.',
-      'What is the most used language in programming? Profanity.',
-      'What is the object-oriented way to become wealthy? Inheritance.',
-      'An SEO expert walks into a bar, bars, pub, tavern, public house, Irish pub, drinks, beer, alcohol'
+      'Hey! you can upload your files here.',
+      'Your response has been recorded.',
+      'Please wait, I am processing your query.',
+      'Have a nice day.',
+      'This seems interesting, wait till I analyse it.',
+      'I will get back to you with the results.'
     ],
     init: function() {
       this.cacheDOM();
